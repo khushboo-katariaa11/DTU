@@ -14,6 +14,8 @@ import { queryClient, apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2, Clock, BarChart, Users, Video, FileText, Heart } from "lucide-react";
 import TestimonialCard from "@/components/testimonial/TestimonialCard";
+import StudyMaterialCard, { StudySection } from "@/components/study/StudyMaterialCard";
+import { useTextToSpeech } from "@/hooks/use-text-to-speech";
 
 export default function CourseDetailsPage() {
   const { id } = useParams<{ id: string }>();
@@ -22,6 +24,106 @@ export default function CourseDetailsPage() {
   const { user } = useAuth();
   const { toast } = useToast();
   const [activeTab, setActiveTab] = useState("overview");
+  const { speak } = useTextToSpeech();
+  
+  // Sample study materials (in a real app, these would come from the server)
+  const [studyMaterials, setStudyMaterials] = useState<{
+    [moduleId: string]: StudySection[];
+  }>({
+    "module1": [
+      {
+        id: "1.1",
+        title: "Introduction to Web Accessibility",
+        content: "Web accessibility means that websites, tools, and technologies are designed and developed so that people with disabilities can use them. More specifically, people can perceive, understand, navigate, and interact with the Web, and contribute to the Web.",
+        type: "text",
+        estimatedTime: 10,
+        isCompleted: false
+      },
+      {
+        id: "1.2",
+        title: "Understanding Different Types of Disabilities",
+        content: "There are various types of disabilities: visual (blindness, low vision, color blindness), auditory (deafness, hard-of-hearing), motor (inability to use a mouse, slow response time), cognitive (learning disabilities, distractibility, inability to remember).",
+        type: "text",
+        estimatedTime: 15,
+        isCompleted: false
+      },
+      {
+        id: "1.3",
+        title: "WCAG Guidelines Overview",
+        content: "https://www.youtube.com/embed/dQw4w9WgXcQ",
+        type: "video",
+        estimatedTime: 20,
+        isCompleted: false
+      }
+    ],
+    "module2": [
+      {
+        id: "2.1",
+        title: "Semantic HTML",
+        content: "Semantic HTML elements clearly describe their meaning in a human and machine-readable way. Elements such as <header>, <footer>, <article>, and <section> are all semantic elements that provide context about their content to both the browser and the developer.",
+        type: "text",
+        estimatedTime: 15,
+        isCompleted: false
+      },
+      {
+        id: "2.2",
+        title: "ARIA Attributes and Roles",
+        content: "ARIA (Accessible Rich Internet Applications) is a set of attributes that define ways to make web content and web applications more accessible to people with disabilities. These attributes supplement HTML so that interactions and widgets commonly used in applications can be passed to assistive technologies.",
+        type: "text",
+        estimatedTime: 20,
+        isCompleted: false
+      },
+      {
+        id: "2.3",
+        title: "Keyboard Navigation",
+        content: "Keyboard navigation is the ability to use a website with just a keyboard, without using a mouse. This is essential for users who cannot use a mouse, including many users with motor disabilities, as well as users who use alternative input devices such as speech-to-text software.",
+        type: "text",
+        estimatedTime: 15,
+        isCompleted: false
+      }
+    ],
+    "module3": [
+      {
+        id: "3.1",
+        title: "Color Contrast and Readability",
+        content: "Ensuring sufficient color contrast between text and its background is crucial for users with low vision or color blindness. The WCAG 2.1 guidelines recommend a contrast ratio of at least 4.5:1 for normal text and 3:1 for large text.",
+        type: "text",
+        estimatedTime: 10,
+        isCompleted: false
+      },
+      {
+        id: "3.2",
+        title: "Screen Readers and Assistive Technologies",
+        content: "https://www.youtube.com/embed/dQw4w9WgXcQ",
+        type: "video",
+        estimatedTime: 25,
+        isCompleted: false
+      }
+    ]
+  });
+  
+  // Function to mark a section as completed
+  const handleCompleteMaterial = (sectionId: string) => {
+    setStudyMaterials(prev => {
+      const newMaterials = { ...prev };
+      
+      Object.keys(newMaterials).forEach(moduleId => {
+        newMaterials[moduleId] = newMaterials[moduleId].map(section => {
+          if (section.id === sectionId) {
+            return { ...section, isCompleted: true };
+          }
+          return section;
+        });
+      });
+      
+      return newMaterials;
+    });
+    
+    toast({
+      title: "Progress Updated",
+      description: "Section marked as completed",
+    });
+  };
   
   // Fetch course details
   const { 
@@ -358,116 +460,94 @@ export default function CourseDetailsPage() {
             <div>
               <h2 className="text-2xl font-bold mb-4">Course Curriculum</h2>
               <p className="text-muted-foreground mb-8">
-                {materials.length} lessons • 8 weeks • 24 hours of content
+                {Object.values(studyMaterials).flat().length} lessons • 8 weeks • 24 hours of content
               </p>
               
               {materialsLoading ? (
                 <div className="flex justify-center py-8">
                   <Loader2 className="h-8 w-8 animate-spin text-primary" />
                 </div>
-              ) : materials.length === 0 ? (
+              ) : Object.keys(studyMaterials).length === 0 ? (
                 <div className="text-center p-8 bg-muted/30 rounded-lg">
                   <p className="text-muted-foreground">No materials available yet.</p>
                 </div>
               ) : (
-                <div className="space-y-6">
-                  {/* Module 1 */}
-                  <div className="space-y-2">
-                    <h3 className="text-xl font-medium">Module 1: Introduction to Accessibility</h3>
-                    <Card>
-                      <CardContent className="p-0">
-                        <div className="divide-y">
-                          {materials.filter(m => m.orderIndex < 5).map((material, idx) => (
-                            <div key={material.id} className="flex items-center justify-between p-4">
-                              <div className="flex items-center space-x-3">
-                                {material.type === 'video' ? (
-                                  <Video className="h-5 w-5 text-primary" />
-                                ) : (
-                                  <FileText className="h-5 w-5 text-primary" />
-                                )}
-                                <span>{material.title}</span>
-                              </div>
-                              <div className="flex items-center">
-                                <span className="text-sm text-muted-foreground mr-4">10:30</span>
-                                <Button 
-                                  size="sm" 
-                                  variant={enrollment ? "outline" : "secondary"}
-                                  disabled={!enrollment}
-                                >
-                                  {enrollment ? 'Play' : 'Preview'}
-                                </Button>
-                              </div>
-                            </div>
-                          ))}
-                          
-                          {/* If no materials, show sample lessons */}
-                          {materials.length === 0 && (
-                            <>
-                              <div className="flex items-center justify-between p-4">
-                                <div className="flex items-center space-x-3">
-                                  <Video className="h-5 w-5 text-primary" />
-                                  <span>Introduction to Web Accessibility</span>
-                                </div>
-                                <div className="flex items-center">
-                                  <span className="text-sm text-muted-foreground mr-4">10:30</span>
-                                  <Button size="sm" variant="secondary">
-                                    Preview
-                                  </Button>
-                                </div>
-                              </div>
-                              <div className="flex items-center justify-between p-4">
-                                <div className="flex items-center space-x-3">
-                                  <FileText className="h-5 w-5 text-primary" />
-                                  <span>WCAG Guidelines Overview</span>
-                                </div>
-                                <div className="flex items-center">
-                                  <span className="text-sm text-muted-foreground mr-4">15:45</span>
-                                  <Button size="sm" variant="outline" disabled={!enrollment}>
-                                    Play
-                                  </Button>
-                                </div>
-                              </div>
-                            </>
-                          )}
-                        </div>
-                      </CardContent>
-                    </Card>
+                <div className="space-y-10">
+                  {/* Module 1: Introduction to Accessibility */}
+                  <div>
+                    <h3 className="text-2xl font-medium mb-4">Module 1: Introduction to Accessibility</h3>
+                    <StudyMaterialCard
+                      title="Web Accessibility Fundamentals"
+                      description="Learn the basics of web accessibility and why it matters for all users."
+                      difficulty="beginner"
+                      sections={studyMaterials.module1}
+                      onComplete={handleCompleteMaterial}
+                      onTextToSpeech={speak}
+                    />
                   </div>
                   
-                  {/* Module 2 */}
-                  <div className="space-y-2">
-                    <h3 className="text-xl font-medium">Module 2: Keyboard Accessibility</h3>
-                    <Card>
-                      <CardContent className="p-0">
-                        <div className="divide-y">
-                          <div className="flex items-center justify-between p-4">
-                            <div className="flex items-center space-x-3">
-                              <Video className="h-5 w-5 text-primary" />
-                              <span>Focus Management Principles</span>
-                            </div>
-                            <div className="flex items-center">
-                              <span className="text-sm text-muted-foreground mr-4">12:20</span>
-                              <Button size="sm" variant="outline" disabled={!enrollment}>
-                                Play
-                              </Button>
-                            </div>
-                          </div>
-                          <div className="flex items-center justify-between p-4">
-                            <div className="flex items-center space-x-3">
-                              <FileText className="h-5 w-5 text-primary" />
-                              <span>Implementing Skip Links</span>
-                            </div>
-                            <div className="flex items-center">
-                              <span className="text-sm text-muted-foreground mr-4">8:15</span>
-                              <Button size="sm" variant="outline" disabled={!enrollment}>
-                                Play
-                              </Button>
-                            </div>
-                          </div>
-                        </div>
-                      </CardContent>
-                    </Card>
+                  {/* Module 2: Implementation Techniques */}
+                  <div>
+                    <h3 className="text-2xl font-medium mb-4">Module 2: Implementation Techniques</h3>
+                    <StudyMaterialCard
+                      title="Accessibility Implementation"
+                      description="Learn practical techniques for building accessible web interfaces."
+                      difficulty="intermediate"
+                      sections={studyMaterials.module2}
+                      onComplete={handleCompleteMaterial}
+                      onTextToSpeech={speak}
+                    />
                   </div>
+                  
+                  {/* Module 3: Advanced Accessibility */}
+                  <div>
+                    <h3 className="text-2xl font-medium mb-4">Module 3: Advanced Accessibility</h3>
+                    <StudyMaterialCard
+                      title="Advanced Accessibility Techniques"
+                      description="Mastering complex accessibility patterns and testing methods."
+                      difficulty="advanced"
+                      sections={studyMaterials.module3}
+                      onComplete={handleCompleteMaterial}
+                      onTextToSpeech={speak}
+                    />
+                  </div>
+                  
+                  {/* Traditional materials display as fallback */}
+                  {materials.length > 0 && (
+                    <div className="mt-12 pt-8 border-t">
+                      <h3 className="text-xl font-medium mb-6">Additional Course Materials</h3>
+                      <Card>
+                        <CardContent className="p-0">
+                          <div className="divide-y">
+                            {materials.map((material, idx) => (
+                              <div key={material.id} className="flex items-center justify-between p-4">
+                                <div className="flex items-center space-x-3">
+                                  {material.type === 'video' ? (
+                                    <Video className="h-5 w-5 text-primary" />
+                                  ) : (
+                                    <FileText className="h-5 w-5 text-primary" />
+                                  )}
+                                  <div>
+                                    <p className="font-medium">{material.title}</p>
+                                    <p className="text-sm text-muted-foreground">
+                                      {material.type.charAt(0).toUpperCase() + material.type.slice(1)} • 20 min
+                                    </p>
+                                  </div>
+                                </div>
+                                {enrollment ? (
+                                  <Button variant="ghost" size="sm">
+                                    {enrollment.progress > idx * 20 ? 'Review' : 'Start'}
+                                  </Button>
+                                ) : (
+                                  <Badge variant="outline">Preview</Badge>
+                                )}
+                              </div>
+                            ))}
+                          </div>
+                        </CardContent>
+                      </Card>
+                    </div>
+                  )}
                 </div>
               )}
             </div>
@@ -501,7 +581,7 @@ export default function CourseDetailsPage() {
                             <div>
                               <p className="font-medium">Student #{review.userId}</p>
                               <p className="text-sm text-muted-foreground">
-                                {new Date(review.createdAt).toLocaleDateString()}
+                                {review.createdAt ? new Date(review.createdAt).toLocaleDateString() : 'Unknown date'}
                               </p>
                             </div>
                           </div>
