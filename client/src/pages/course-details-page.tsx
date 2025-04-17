@@ -581,7 +581,7 @@ export default function CourseDetailsPage() {
                             <div>
                               <p className="font-medium">Student #{review.userId}</p>
                               <p className="text-sm text-muted-foreground">
-                                {typeof review.createdAt === 'string' ? new Date(review.createdAt).toLocaleDateString() : 'Unknown date'}
+                                {review.createdAt ? new Date(review.createdAt).toLocaleDateString() : 'Unknown date'}
                               </p>
                             </div>
                           </div>
