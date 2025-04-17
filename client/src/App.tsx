@@ -17,7 +17,7 @@ import Navbar from "./components/navbar/Navbar";
 import Footer from "./components/footer/Footer";
 import AccessibilityPanel from "./components/accessibility/AccessibilityPanel";
 
-function Router() {
+function AppRouter() {
   const { user } = useAuth();
 
   return (
@@ -60,7 +60,7 @@ function App() {
             <div className="min-h-screen flex flex-col">
               <Navbar />
               <main className="flex-grow">
-                <Router />
+                <AppRouter />
               </main>
               <Footer />
               <AccessibilityPanel />
