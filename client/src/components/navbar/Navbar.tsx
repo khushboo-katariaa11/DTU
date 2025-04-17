@@ -22,25 +22,27 @@ export default function Navbar() {
     <header className="sticky top-0 z-40 w-full border-b bg-background">
       <div className="container flex h-16 items-center justify-between">
         <div className="flex items-center gap-8">
-          <Link href="/">
-            <a className="flex items-center gap-2">
-              <svg className="h-8 w-8 text-primary" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path>
-              </svg>
-              <span className="font-bold text-xl">EduAble</span>
-            </a>
-          </Link>
+          <div className="logo">
+            <Link href="/">
+              <div className="flex items-center gap-2 cursor-pointer">
+                <svg className="h-8 w-8 text-primary" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path>
+                </svg>
+                <span className="font-bold text-xl">EduAble</span>
+              </div>
+            </Link>
+          </div>
           
           <nav className="hidden md:flex items-center gap-6">
             <Link href="/">
-              <a className={`text-sm font-medium transition-colors hover:text-primary ${isActive('/') ? 'text-primary' : 'text-foreground/60'}`}>
+              <span className={`text-sm font-medium transition-colors hover:text-primary cursor-pointer ${isActive('/') ? 'text-primary' : 'text-foreground/60'}`}>
                 Home
-              </a>
+              </span>
             </Link>
             <Link href="/courses">
-              <a className={`text-sm font-medium transition-colors hover:text-primary ${isActive('/courses') ? 'text-primary' : 'text-foreground/60'}`}>
+              <span className={`text-sm font-medium transition-colors hover:text-primary cursor-pointer ${isActive('/courses') ? 'text-primary' : 'text-foreground/60'}`}>
                 Courses
-              </a>
+              </span>
             </Link>
             <a 
               href="#about" 
@@ -61,7 +63,7 @@ export default function Navbar() {
           {user ? (
             <>
               <Link href={getDashboardLink()}>
-                <Button variant="outline">Dashboard</Button>
+                <Button variant="outline" className="cursor-pointer">Dashboard</Button>
               </Link>
               <Button 
                 variant="ghost" 
@@ -74,10 +76,10 @@ export default function Navbar() {
           ) : (
             <>
               <Link href="/auth">
-                <Button variant="outline">Log in</Button>
+                <Button variant="outline" className="cursor-pointer">Log in</Button>
               </Link>
               <Link href="/auth?tab=register">
-                <Button>Sign up</Button>
+                <Button className="cursor-pointer">Sign up</Button>
               </Link>
             </>
           )}
@@ -92,29 +94,35 @@ export default function Navbar() {
           <SheetContent side="left">
             <div className="flex flex-col h-full">
               <div className="flex items-center justify-between pb-4 border-b">
-                <Link href="/" onClick={closeMobileMenu}>
-                  <a className="flex items-center gap-2">
-                    <svg className="h-6 w-6 text-primary" viewBox="0 0 24 24" fill="currentColor">
-                      <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path>
-                    </svg>
-                    <span className="font-bold">EduAble</span>
-                  </a>
-                </Link>
+                <div onClick={closeMobileMenu}>
+                  <Link href="/">
+                    <div className="flex items-center gap-2 cursor-pointer">
+                      <svg className="h-6 w-6 text-primary" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path>
+                      </svg>
+                      <span className="font-bold">EduAble</span>
+                    </div>
+                  </Link>
+                </div>
                 <Button variant="ghost" size="icon" onClick={closeMobileMenu}>
                   <X className="h-5 w-5" />
                 </Button>
               </div>
               <nav className="flex flex-col gap-4 py-4">
-                <Link href="/" onClick={closeMobileMenu}>
-                  <a className={`px-2 py-1 text-base transition-colors hover:text-primary ${isActive('/') ? 'text-primary font-medium' : 'text-foreground/60'}`}>
-                    Home
-                  </a>
-                </Link>
-                <Link href="/courses" onClick={closeMobileMenu}>
-                  <a className={`px-2 py-1 text-base transition-colors hover:text-primary ${isActive('/courses') ? 'text-primary font-medium' : 'text-foreground/60'}`}>
-                    Courses
-                  </a>
-                </Link>
+                <div onClick={closeMobileMenu}>
+                  <Link href="/">
+                    <span className={`block px-2 py-1 text-base transition-colors hover:text-primary cursor-pointer ${isActive('/') ? 'text-primary font-medium' : 'text-foreground/60'}`}>
+                      Home
+                    </span>
+                  </Link>
+                </div>
+                <div onClick={closeMobileMenu}>
+                  <Link href="/courses">
+                    <span className={`block px-2 py-1 text-base transition-colors hover:text-primary cursor-pointer ${isActive('/courses') ? 'text-primary font-medium' : 'text-foreground/60'}`}>
+                      Courses
+                    </span>
+                  </Link>
+                </div>
                 <a 
                   href="#about" 
                   className="px-2 py-1 text-base text-foreground/60 transition-colors hover:text-primary"
@@ -133,9 +141,11 @@ export default function Navbar() {
               <div className="mt-auto py-4 border-t flex flex-col gap-2">
                 {user ? (
                   <>
-                    <Link href={getDashboardLink()} onClick={closeMobileMenu}>
-                      <Button className="w-full" variant="default">Dashboard</Button>
-                    </Link>
+                    <div onClick={closeMobileMenu}>
+                      <Link href={getDashboardLink()}>
+                        <Button className="w-full cursor-pointer" variant="default">Dashboard</Button>
+                      </Link>
+                    </div>
                     <Button 
                       className="w-full"
                       variant="outline" 
@@ -150,12 +160,16 @@ export default function Navbar() {
                   </>
                 ) : (
                   <>
-                    <Link href="/auth" onClick={closeMobileMenu}>
-                      <Button className="w-full" variant="outline">Log in</Button>
-                    </Link>
-                    <Link href="/auth?tab=register" onClick={closeMobileMenu}>
-                      <Button className="w-full">Sign up</Button>
-                    </Link>
+                    <div onClick={closeMobileMenu}>
+                      <Link href="/auth">
+                        <Button className="w-full cursor-pointer" variant="outline">Log in</Button>
+                      </Link>
+                    </div>
+                    <div onClick={closeMobileMenu}>
+                      <Link href="/auth?tab=register">
+                        <Button className="w-full cursor-pointer">Sign up</Button>
+                      </Link>
+                    </div>
                   </>
                 )}
               </div>

@@ -4,19 +4,47 @@ import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { AccessibilitySettings } from "@shared/schema";
 
+// Extended accessibility settings interface
+interface ExtendedAccessibilitySettings extends AccessibilitySettings {
+  cursorSize?: "normal" | "large" | "largest";
+  lineSpacing?: "normal" | "wide" | "wider";
+  textToSpeechRate?: number;
+  motionReduced?: boolean;
+  autoplay?: boolean;
+  highlightLinks?: boolean;
+  keyboardNavigation?: boolean;
+  imageDescriptions?: boolean;
+}
+
 type AccessibilityContextType = {
   theme: "light" | "dark" | "high-contrast" | "color-blind";
   fontFamily: "standard" | "dyslexic";
   fontSize: "normal" | "large" | "larger";
   enableTTS: boolean;
-  updateSettings: (settings: Partial<AccessibilitySettings>) => Promise<void>;
+  cursorSize: "normal" | "large" | "largest";
+  lineSpacing: "normal" | "wide" | "wider";
+  textToSpeechRate: number;
+  motionReduced: boolean;
+  autoplay: boolean;
+  highlightLinks: boolean;
+  keyboardNavigation: boolean;
+  imageDescriptions: boolean;
+  updateSettings: (settings: Partial<ExtendedAccessibilitySettings>) => Promise<void>;
 };
 
-const defaultSettings: AccessibilitySettings = {
+const defaultSettings: ExtendedAccessibilitySettings = {
   theme: "light",
   fontFamily: "standard",
   fontSize: "normal",
-  enableTTS: false
+  enableTTS: false,
+  cursorSize: "normal",
+  lineSpacing: "normal",
+  textToSpeechRate: 1,
+  motionReduced: false,
+  autoplay: true,
+  highlightLinks: false,
+  keyboardNavigation: false,
+  imageDescriptions: true
 };
 
 export const AccessibilityContext = createContext<AccessibilityContextType>({
@@ -28,15 +56,28 @@ export function AccessibilityProvider({ children }: { children: ReactNode }) {
   const { user } = useAuth();
   const { toast } = useToast();
   
-  const [settings, setSettings] = useState<AccessibilitySettings>(defaultSettings);
+  const [settings, setSettings] = useState<ExtendedAccessibilitySettings>(defaultSettings);
   
-  // Initialize settings from user or defaults
+  // Initialize settings from user, localStorage, or defaults
   useEffect(() => {
     if (user?.accessibilitySettings) {
       setSettings({
         ...defaultSettings,
         ...user.accessibilitySettings
       });
+    } else {
+      // Try to get settings from localStorage for non-logged in users
+      const savedSettings = localStorage.getItem('accessibilitySettings');
+      if (savedSettings) {
+        try {
+          setSettings({
+            ...defaultSettings,
+            ...JSON.parse(savedSettings)
+          });
+        } catch (e) {
+          console.error("Error parsing saved accessibility settings", e);
+        }
+      }
     }
   }, [user]);
   
@@ -55,10 +96,35 @@ export function AccessibilityProvider({ children }: { children: ReactNode }) {
     // Apply font size
     document.body.setAttribute('data-font-size', settings.fontSize || 'normal');
     
-    // Enable or disable TTS would be handled in components that use it
+    // Apply line spacing
+    document.body.setAttribute('data-line-spacing', settings.lineSpacing || 'normal');
+    
+    // Apply cursor size
+    document.body.setAttribute('data-cursor-size', settings.cursorSize || 'normal');
+    
+    // Apply reduced motion
+    if (settings.motionReduced) {
+      document.body.classList.add('reduce-motion');
+    } else {
+      document.body.classList.remove('reduce-motion');
+    }
+    
+    // Apply link highlighting
+    if (settings.highlightLinks) {
+      document.body.classList.add('highlight-links');
+    } else {
+      document.body.classList.remove('highlight-links');
+    }
+    
+    // Apply keyboard navigation enhancement
+    if (settings.keyboardNavigation) {
+      document.body.classList.add('enhanced-keyboard-navigation');
+    } else {
+      document.body.classList.remove('enhanced-keyboard-navigation');
+    }
   }, [settings]);
   
-  const updateSettings = async (newSettings: Partial<AccessibilitySettings>) => {
+  const updateSettings = async (newSettings: Partial<ExtendedAccessibilitySettings>) => {
     try {
       // Update local state immediately for better UX
       const updatedSettings = { ...settings, ...newSettings };
@@ -96,6 +162,14 @@ export function AccessibilityProvider({ children }: { children: ReactNode }) {
         fontFamily: settings.fontFamily || "standard",
         fontSize: settings.fontSize || "normal",
         enableTTS: settings.enableTTS || false,
+        cursorSize: settings.cursorSize || "normal",
+        lineSpacing: settings.lineSpacing || "normal",
+        textToSpeechRate: settings.textToSpeechRate || 1,
+        motionReduced: settings.motionReduced || false,
+        autoplay: settings.autoplay !== undefined ? settings.autoplay : true,
+        highlightLinks: settings.highlightLinks || false,
+        keyboardNavigation: settings.keyboardNavigation || false,
+        imageDescriptions: settings.imageDescriptions !== undefined ? settings.imageDescriptions : true,
         updateSettings
       }}
     >
