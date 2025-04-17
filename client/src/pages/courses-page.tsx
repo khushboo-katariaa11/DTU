@@ -105,9 +105,9 @@ export default function CoursesPage() {
                 <SelectValue placeholder="Difficulty: All" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">All Difficulties</SelectItem>
+                <SelectItem value="all">All Difficulties</SelectItem>
                 {difficulties.map(difficulty => (
-                  <SelectItem key={difficulty} value={difficulty}>{difficulty}</SelectItem>
+                  <SelectItem key={difficulty} value={difficulty.toLowerCase()}>{difficulty}</SelectItem>
                 ))}
               </SelectContent>
             </Select>
