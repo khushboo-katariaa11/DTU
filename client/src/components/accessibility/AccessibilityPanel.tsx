@@ -50,8 +50,8 @@ export default function AccessibilityPanel() {
     fontSize,
     enableTTS,
     // Additional settings
-    cursorSize: "normal",
-    lineSpacing: "normal",
+    cursorSize: "normal" as "normal" | "large" | "largest",
+    lineSpacing: "normal" as "normal" | "wide" | "wider",
     textToSpeechRate: 1,
     motionReduced: false,
     autoplay: false,

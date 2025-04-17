@@ -10,4 +10,124 @@
   body {
     @apply font-sans antialiased bg-background text-foreground;
   }
+  
+  /* Font family accessibility options */
+  .font-dyslexic {
+    font-family: 'OpenDyslexic', sans-serif;
+    letter-spacing: 0.5px;
+    word-spacing: 2px;
+  }
+  
+  /* Font size accessibility options */
+  body[data-font-size="normal"] {
+    font-size: 16px;
+  }
+  
+  body[data-font-size="large"] {
+    font-size: 18px;
+  }
+  
+  body[data-font-size="larger"] {
+    font-size: 20px;
+  }
+  
+  /* Line spacing accessibility options */
+  body[data-line-spacing="normal"] p, 
+  body[data-line-spacing="normal"] li {
+    line-height: 1.5;
+  }
+  
+  body[data-line-spacing="wide"] p, 
+  body[data-line-spacing="wide"] li {
+    line-height: 1.8;
+  }
+  
+  body[data-line-spacing="wider"] p, 
+  body[data-line-spacing="wider"] li {
+    line-height: 2.2;
+  }
+  
+  /* Cursor size accessibility options */
+  body[data-cursor-size="normal"] {
+    cursor: auto;
+  }
+  
+  body[data-cursor-size="large"] {
+    cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m2 12 5 5v-3h12v-4H7V7l-5 5z'/%3E%3C/svg%3E"), auto;
+  }
+  
+  body[data-cursor-size="largest"] {
+    cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m2 12 5 5v-3h12v-4H7V7l-5 5z'/%3E%3C/svg%3E"), auto;
+  }
+  
+  /* Reduced motion accessibility option */
+  .reduce-motion * {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+  
+  /* Enhanced link highlighting */
+  .highlight-links a:not(.no-highlight) {
+    text-decoration: underline;
+    text-decoration-thickness: 2px;
+    text-underline-offset: 2px;
+  }
+  
+  .highlight-links a:not(.no-highlight):hover,
+  .highlight-links a:not(.no-highlight):focus {
+    outline: 2px solid currentColor;
+    outline-offset: 2px;
+    text-decoration: none;
+  }
+  
+  /* Enhanced keyboard navigation */
+  .enhanced-keyboard-navigation :focus {
+    outline: 3px solid hsl(var(--primary)) !important;
+    outline-offset: 3px !important;
+  }
+  
+  /* High contrast theme */
+  body[data-theme="high-contrast"] {
+    --background: 0 0% 0%;
+    --foreground: 0 0% 100%;
+    --card: 0 0% 0%;
+    --card-foreground: 0 0% 100%;
+    --popover: 0 0% 0%;
+    --popover-foreground: 0 0% 100%;
+    --primary: 0 0% 100%;
+    --primary-foreground: 0 0% 0%;
+    --secondary: 0 0% 80%;
+    --secondary-foreground: 0 0% 0%;
+    --muted: 0 0% 20%;
+    --muted-foreground: 0 0% 80%;
+    --accent: 0 0% 20%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 100% 50%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 0 0% 60%;
+    --input: 0 0% 60%;
+    --ring: 0 0% 100%;
+    color-scheme: dark;
+  }
+  
+  /* Color blind friendly theme */
+  body[data-theme="color-blind"] {
+    --primary: 211 100% 50%;  /* Blue */
+    --secondary: 35 100% 50%; /* Yellow */
+    --destructive: 0 0% 0%;   /* Black */
+    --success: 211 100% 50%;  /* Blue */
+    --warning: 35 100% 50%;   /* Yellow */
+  }
+  
+  body[data-theme="color-blind"] .text-red-500,
+  body[data-theme="color-blind"] .text-green-500 {
+    @apply text-blue-500;
+  }
+  
+  body[data-theme="color-blind"] .bg-red-500,
+  body[data-theme="color-blind"] .bg-green-500 {
+    @apply bg-blue-500;
+  }
 }

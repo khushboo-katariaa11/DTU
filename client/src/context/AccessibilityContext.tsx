@@ -48,7 +48,18 @@ const defaultSettings: ExtendedAccessibilitySettings = {
 };
 
 export const AccessibilityContext = createContext<AccessibilityContextType>({
-  ...defaultSettings,
+  theme: "light",
+  fontFamily: "standard",
+  fontSize: "normal",
+  enableTTS: false,
+  cursorSize: "normal",
+  lineSpacing: "normal",
+  textToSpeechRate: 1,
+  motionReduced: false,
+  autoplay: true,
+  highlightLinks: false,
+  keyboardNavigation: false,
+  imageDescriptions: true,
   updateSettings: async () => {}
 });
 
