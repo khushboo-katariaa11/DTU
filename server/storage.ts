@@ -100,11 +100,15 @@ export class MemStorage implements IStorage {
   
   private async initializeSampleData() {
     try {
+      // Generate a password hash
+      const passwordHash = "5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8.f2ca1bb6c7e907d06dafe4687e579fce76b37e4e93b7605022da52e6ccc26fd2";
+      console.log("Using password hash:", passwordHash);
+      
       // Create default admin user
       const adminUser = await this.createUser({
         username: "admin",
         email: "admin@example.com",
-        password: "$2b$10$EfIUdOoS9n0w9JqCimoJjOdKUGK5WBJxCfo3Qf0Gl8fHtGKkTaAQC", // "password"
+        password: passwordHash, // "password"
         fullName: "Admin User",
         role: "admin",
         accessibilitySettings: {
@@ -119,7 +123,7 @@ export class MemStorage implements IStorage {
       const teacherUser = await this.createUser({
         username: "teacher",
         email: "teacher@example.com",
-        password: "$2b$10$EfIUdOoS9n0w9JqCimoJjOdKUGK5WBJxCfo3Qf0Gl8fHtGKkTaAQC", // "password"
+        password: passwordHash, // "password"
         fullName: "Dr. Alex Johnson",
         role: "teacher",
         accessibilitySettings: {
@@ -204,7 +208,7 @@ export class MemStorage implements IStorage {
       const studentUser = await this.createUser({
         username: "student",
         email: "student@example.com",
-        password: "$2b$10$EfIUdOoS9n0w9JqCimoJjOdKUGK5WBJxCfo3Qf0Gl8fHtGKkTaAQC", // "password"
+        password: passwordHash, // "password"
         fullName: "Student User",
         role: "student",
         accessibilitySettings: {

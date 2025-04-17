@@ -22,10 +22,32 @@ async function hashPassword(password: string) {
 }
 
 async function comparePasswords(supplied: string, stored: string) {
-  const [hashed, salt] = stored.split(".");
-  const hashedBuf = Buffer.from(hashed, "hex");
-  const suppliedBuf = (await scryptAsync(supplied, salt, 64)) as Buffer;
-  return timingSafeEqual(hashedBuf, suppliedBuf);
+  try {
+    console.log("Comparing passwords...");
+    
+    // Check if the stored password has the expected format
+    if (!stored.includes(".")) {
+      console.error("Stored password doesn't have the expected format - missing salt separator");
+      return false;
+    }
+    
+    const [hashed, salt] = stored.split(".");
+    
+    if (!hashed || !salt) {
+      console.error("Invalid stored password format");
+      return false;
+    }
+    
+    const hashedBuf = Buffer.from(hashed, "hex");
+    const suppliedBuf = (await scryptAsync(supplied, salt, 64)) as Buffer;
+    
+    const result = timingSafeEqual(hashedBuf, suppliedBuf);
+    console.log("Password comparison result:", result);
+    return result;
+  } catch (error) {
+    console.error("Error comparing passwords:", error);
+    return false;
+  }
 }
 
 export function setupAuth(app: Express) {
@@ -101,8 +123,27 @@ export function setupAuth(app: Express) {
     }
   });
 
-  app.post("/api/login", passport.authenticate("local"), (req, res) => {
-    res.status(200).json(req.user);
+  app.post("/api/login", (req, res, next) => {
+    console.log("Login attempt:", req.body.username);
+    passport.authenticate("local", (err: Error | null, user: any, info: any) => {
+      if (err) {
+        console.error("Login error:", err);
+        return next(err);
+      }
+      if (!user) {
+        console.log("Login failed - user not found");
+        return res.status(401).json({ message: "Invalid username or password" });
+      }
+      
+      req.login(user, (loginErr) => {
+        if (loginErr) {
+          console.error("Login error:", loginErr);
+          return next(loginErr);
+        }
+        console.log("Login successful for user ID:", user.id);
+        return res.status(200).json(user);
+      });
+    })(req, res, next);
   });
 
   app.post("/api/logout", (req, res, next) => {
