@@ -93,6 +93,148 @@ export class MemStorage implements IStorage {
     this.sessionStore = new MemoryStore({
       checkPeriod: 86400000 // 24 hours
     });
+    
+    // Initialize with sample data
+    this.initializeSampleData();
+  }
+  
+  private async initializeSampleData() {
+    try {
+      // Create default admin user
+      const adminUser = await this.createUser({
+        username: "admin",
+        email: "admin@example.com",
+        password: "$2b$10$EfIUdOoS9n0w9JqCimoJjOdKUGK5WBJxCfo3Qf0Gl8fHtGKkTaAQC", // "password"
+        fullName: "Admin User",
+        role: "admin",
+        accessibilitySettings: {
+          theme: "light",
+          fontFamily: "standard",
+          fontSize: "normal",
+          enableTTS: false
+        }
+      });
+      
+      // Create a teacher
+      const teacherUser = await this.createUser({
+        username: "teacher",
+        email: "teacher@example.com",
+        password: "$2b$10$EfIUdOoS9n0w9JqCimoJjOdKUGK5WBJxCfo3Qf0Gl8fHtGKkTaAQC", // "password"
+        fullName: "Dr. Alex Johnson",
+        role: "teacher",
+        accessibilitySettings: {
+          theme: "light",
+          fontFamily: "standard",
+          fontSize: "normal",
+          enableTTS: false
+        }
+      });
+      
+      // Create courses
+      const courses = [
+        {
+          title: "Web Accessibility Fundamentals",
+          description: "Learn the fundamentals of web accessibility and how to make your websites usable by everyone.",
+          thumbnail: "https://placehold.co/800x400/4F46E5/FFFFFF?text=Web+Accessibility",
+          price: 9900, // $99.00
+          category: "Web Development",
+          difficulty: "beginner",
+          teacherId: teacherUser.id
+        },
+        {
+          title: "Advanced ARIA Techniques",
+          description: "Master advanced ARIA patterns and techniques to create complex accessible interfaces.",
+          thumbnail: "https://placehold.co/800x400/4F46E5/FFFFFF?text=Advanced+ARIA",
+          price: 12900, // $129.00
+          category: "Web Development",
+          difficulty: "advanced",
+          teacherId: teacherUser.id
+        },
+        {
+          title: "Mobile Accessibility",
+          description: "Learn how to make mobile applications accessible to users with disabilities.",
+          thumbnail: "https://placehold.co/800x400/4F46E5/FFFFFF?text=Mobile+Accessibility",
+          price: 8900, // $89.00
+          category: "Mobile Development",
+          difficulty: "intermediate",
+          teacherId: teacherUser.id
+        },
+        {
+          title: "Inclusive Design Principles",
+          description: "Design products that work for everyone by applying inclusive design principles.",
+          thumbnail: "https://placehold.co/800x400/4F46E5/FFFFFF?text=Inclusive+Design",
+          price: 7900, // $79.00
+          category: "Design",
+          difficulty: "beginner",
+          teacherId: teacherUser.id
+        }
+      ];
+      
+      // Add courses
+      for (const courseData of courses) {
+        const course = await this.createCourse(courseData);
+        
+        // Add sample materials to each course
+        await this.createMaterial({
+          title: "Course Introduction",
+          content: "Introduction to the course and its objectives.",
+          type: "video",
+          courseId: course.id,
+          order: 1
+        });
+        
+        await this.createMaterial({
+          title: "Core Concepts",
+          content: "Understanding the core concepts of the subject.",
+          type: "text",
+          courseId: course.id,
+          order: 2
+        });
+        
+        await this.createMaterial({
+          title: "Practical Examples",
+          content: "Real-world examples and practical applications.",
+          type: "text",
+          courseId: course.id,
+          order: 3
+        });
+      }
+      
+      // Create a student
+      const studentUser = await this.createUser({
+        username: "student",
+        email: "student@example.com",
+        password: "$2b$10$EfIUdOoS9n0w9JqCimoJjOdKUGK5WBJxCfo3Qf0Gl8fHtGKkTaAQC", // "password"
+        fullName: "Student User",
+        role: "student",
+        accessibilitySettings: {
+          theme: "light",
+          fontFamily: "standard",
+          fontSize: "normal",
+          enableTTS: false
+        }
+      });
+      
+      // Enroll student in a course
+      const enrollment = await this.createEnrollment({
+        userId: studentUser.id,
+        courseId: 1, // First course
+        progress: 30,
+        completed: false
+      });
+      
+      // Add a review
+      await this.createReview({
+        userId: studentUser.id,
+        courseId: 1,
+        rating: 5,
+        comment: "Excellent course with clear explanations and practical examples!"
+      });
+      
+      console.log("Sample data initialized successfully");
+    } catch (error) {
+      console.error("Error initializing sample data:", error);
+    }
   }
 
   // User operations
@@ -338,10 +480,14 @@ export class MemStorage implements IStorage {
     const id = this.materialCurrentId++;
     const now = new Date();
     
+    // Handle both field names (order and orderIndex)
+    const orderIndex = (insertMaterial as any).order || 0;
+    
     const material: Material = {
       ...insertMaterial,
       id,
-      createdAt: now
+      createdAt: now,
+      orderIndex
     };
     
     this.materialsData.set(id, material);
