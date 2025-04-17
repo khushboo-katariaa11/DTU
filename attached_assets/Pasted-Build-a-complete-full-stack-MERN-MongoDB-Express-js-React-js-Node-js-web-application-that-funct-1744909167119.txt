@@ -1,0 +1,89 @@
+Build a complete full-stack MERN (MongoDB, Express.js, React.js, Node.js) web application that functions as an inclusive educational platform (inspired by PW Skills) specifically tailored for users with disabilities. The app should include:
+
+🎯 Main Objective:
+An education platform with full accessibility features for users with disabilities (color blindness, dyslexia, motor impairments, etc.) and role-based portals: Admin, Teacher, and Student.
+
+🧱 Core Features:
+1. **Landing Page**
+   - Hero section with tagline & CTA
+   - Testimonials carousel
+   - About Us
+   - Footer + NavBar
+
+2. **Authentication & User Roles**
+   - JWT-based login/signup
+   - Role-based dashboard (Admin, Teacher, Student)
+   - Password encryption with bcrypt
+
+3. **Accessibility Features**
+   - Font toggle (OpenDyslexic for dyslexia)
+   - High contrast & color schemes for color blindness
+   - Text-to-speech integration
+   - Keyboard-only navigation
+   - Voice commands (optional)
+   - Adjustable font sizes and line heights
+
+4. **Courses Section**
+   - Course Catalog with filtering (category, difficulty)
+   - Course Details Page:
+     - Progress bar
+     - Visual roadmap (flowchart of learning path)
+     - Course preview
+     - Testimonials/reviews
+
+5. **Study Material**
+   - For each course, allow uploading and viewing of:
+     - PDF notes
+     - Video lectures
+     - Assignments/quizzes
+     - Downloadable resources
+   - Teachers can upload/edit/delete study materials
+   - Students can stream videos or download notes
+
+6. **Dashboards**
+   - **Student Dashboard**
+     - Enrolled courses
+     - Track progress
+     - View/download study material
+     - Certificate download
+     - Customize accessibility settings
+
+   - **Teacher Dashboard**
+     - Add/edit/delete courses
+     - Upload study materials
+     - View enrolled students and progress
+
+   - **Admin Dashboard**
+     - Manage users (ban, promote)
+     - Manage all courses
+     - Platform analytics (course engagement, user stats)
+
+7. **Certificate Generator**
+   - Auto-generate certificates upon course completion
+   - Include student name, course name, and signature fields
+
+8. **Course Flowchart & Roadmap**
+   - Visual journey using `react-flow`, outlining course structure
+   - Show completed vs pending topics
+
+9. **Tech Stack**
+   - **Frontend**: React.js + TailwindCSS
+   - **Backend**: Express.js + Node.js
+   - **Database**: MongoDB + Mongoose
+   - **Auth**: JWT + bcrypt
+
+10. **Accessibility Libraries**
+   - `react-a11y`
+   - `accessibilityjs`
+   - `react-dyslexic-font`
+   - `react-colorblind-accessibility`
+   - `react-speech-kit` (TTS)
+   - `@reach/visually-hidden`
+
+11. **Extra Features**
+   - Responsive UI
+   - Dark/light mode
+   - Email notifications (e.g. enrollment confirmation)
+   - Modular folder structure for scalability
+
+📁 Please scaffold the project folder by feature (not by type), and include reusable components, routes, state/context management, and accessibility-first design.
