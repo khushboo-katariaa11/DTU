@@ -1,7 +1,7 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useParams, useLocation } from "wouter";
 import { useQuery, useMutation } from "@tanstack/react-query";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -12,7 +12,17 @@ import { Course, Material, Enrollment, Review } from "@shared/schema";
 import { useAuth } from "@/hooks/use-auth";
 import { queryClient, apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2, Clock, BarChart, Users, Video, FileText, Heart } from "lucide-react";
+import { 
+  Loader2, Clock, BarChart, Users, Video, FileText, Heart, 
+  Download, BookOpen, CalendarDays, CheckCircle, GraduationCap,
+  Award, Share2, PlusCircle, MinusCircle, ExternalLink, FileDown
+} from "lucide-react";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 import TestimonialCard from "@/components/testimonial/TestimonialCard";
 import StudyMaterialCard, { StudySection } from "@/components/study/StudyMaterialCard";
 import { useTextToSpeech } from "@/hooks/use-text-to-speech";
@@ -25,6 +35,36 @@ export default function CourseDetailsPage() {
   const { toast } = useToast();
   const [activeTab, setActiveTab] = useState("overview");
   const { speak } = useTextToSpeech();
+  const videoRef = useRef<HTMLIFrameElement>(null);
+  const [playingDemo, setPlayingDemo] = useState(false);
+  
+  // Course FAQs
+  const courseFAQs = [
+    {
+      question: "What are the prerequisites for this course?",
+      answer: "Basic knowledge of HTML, CSS, and JavaScript is recommended. No prior accessibility knowledge is required."
+    },
+    {
+      question: "How long do I have access to the course materials?",
+      answer: "Once enrolled, you'll have lifetime access to all course materials, updates, and the community forum."
+    },
+    {
+      question: "Is there a certificate upon completion?",
+      answer: "Yes! Upon completing all course modules and the final project, you'll receive a verified certificate of completion."
+    },
+    {
+      question: "Can I access the course on mobile devices?",
+      answer: "Absolutely! Our platform is fully responsive and optimized for learning on desktop, tablet, and mobile devices."
+    },
+    {
+      question: "What if I'm not satisfied with the course?",
+      answer: "We offer a 30-day money-back guarantee. If you're not completely satisfied, you can request a full refund within 30 days of enrollment."
+    },
+    {
+      question: "Do you offer support during the course?",
+      answer: "Yes, our instructors provide support through the community forum and scheduled Q&A sessions throughout the course."
+    }
+  ];
   
   // Sample study materials (in a real app, these would come from the server)
   const [studyMaterials, setStudyMaterials] = useState<{
@@ -361,16 +401,50 @@ export default function CourseDetailsPage() {
       
       {/* Course Tabs */}
       <Tabs value={activeTab} onValueChange={setActiveTab} className="mt-8">
-        <TabsList className="grid grid-cols-3 mb-8 w-full sm:w-auto">
-          <TabsTrigger value="overview">Overview</TabsTrigger>
-          <TabsTrigger value="curriculum">Curriculum</TabsTrigger>
-          <TabsTrigger value="reviews">Reviews</TabsTrigger>
+        <TabsList className="flex flex-wrap mb-8 w-full border-b">
+          <TabsTrigger value="overview" className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary">Overview</TabsTrigger>
+          <TabsTrigger value="curriculum" className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary">Curriculum</TabsTrigger>
+          <TabsTrigger value="resources" className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary">Resources</TabsTrigger>
+          <TabsTrigger value="faq" className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary">FAQ</TabsTrigger>
+          <TabsTrigger value="reviews" className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary">Reviews</TabsTrigger>
         </TabsList>
         
         {/* Overview Tab */}
         <TabsContent value="overview">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             <div className="lg:col-span-2 space-y-8">
+              {/* Demo Video Section */}
+              <div className="relative aspect-video bg-muted rounded-lg overflow-hidden mb-8">
+                {!playingDemo ? (
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <img 
+                      src={course.thumbnail || `https://placehold.co/1200x675/4F46E5/FFFFFF?text=${encodeURIComponent('Course Preview')}`}
+                      alt="Course Preview" 
+                      className="object-cover w-full h-full"
+                    />
+                    <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
+                      <Button 
+                        size="lg"
+                        className="rounded-full w-16 h-16 flex items-center justify-center"
+                        variant="default"
+                        onClick={() => setPlayingDemo(true)}
+                      >
+                        <Video className="h-8 w-8" />
+                      </Button>
+                    </div>
+                  </div>
+                ) : (
+                  <iframe
+                    ref={videoRef}
+                    className="w-full h-full"
+                    src="https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1"
+                    title="Course Preview"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowFullScreen
+                  ></iframe>
+                )}
+              </div>
+              
               <div>
                 <h2 className="text-2xl font-bold mb-4">About This Course</h2>
                 <div className="prose max-w-none dark:prose-invert">
@@ -380,76 +454,318 @@ export default function CourseDetailsPage() {
                   <p>
                     Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla facilisi. Maecenas vel velit vel eros tincidunt tempus. Sed varius metus id ex dignissim, eget fringilla dui efficitur. Proin tincidunt magna ac felis venenatis, vel efficitur libero fermentum.
                   </p>
-                  <h3>What you'll learn</h3>
-                  <ul>
-                    <li>Build fully accessible web applications</li>
-                    <li>Understand WCAG standards and compliance</li>
-                    <li>Implement keyboard navigation and screen reader support</li>
-                    <li>Create inclusive designs for users with various disabilities</li>
-                    <li>Test applications for accessibility issues</li>
-                  </ul>
                 </div>
               </div>
               
-              <div>
-                <h2 className="text-2xl font-bold mb-4">Prerequisites</h2>
-                <div className="prose max-w-none dark:prose-invert">
-                  <ul>
-                    <li>Basic knowledge of HTML, CSS, and JavaScript</li>
-                    <li>Understanding of web development principles</li>
-                    <li>No prior accessibility knowledge required</li>
-                  </ul>
-                </div>
-              </div>
+              {/* What You'll Learn */}
+              <Card>
+                <CardHeader>
+                  <CardTitle>What You'll Learn</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {[
+                      'Build fully accessible web applications',
+                      'Understand WCAG standards and compliance',
+                      'Implement keyboard navigation and screen reader support',
+                      'Create inclusive designs for users with various disabilities',
+                      'Test applications for accessibility issues',
+                      'Optimize websites for assistive technologies',
+                      'Create accessible color schemes',
+                      'Implement proper focus management'
+                    ].map((item, index) => (
+                      <div key={index} className="flex items-start space-x-2">
+                        <CheckCircle className="h-5 w-5 text-primary mt-0.5" />
+                        <span>{item}</span>
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
               
+              {/* Course Roadmap */}
               <div>
-                <h2 className="text-2xl font-bold mb-4">Course Roadmap</h2>
-                <div className="relative border-l-2 border-muted pl-6 ml-3 space-y-6">
+                <h2 className="text-2xl font-bold mb-6">Course Roadmap</h2>
+                <div className="relative border-l-2 border-muted pl-6 ml-3 space-y-8">
                   {/* Roadmap items */}
                   <div className="relative">
-                    <div className="absolute -left-[1.81rem] top-1 h-4 w-4 rounded-full bg-primary"></div>
-                    <h3 className="text-lg font-medium">Week 1-2: Foundations</h3>
-                    <p className="text-muted-foreground">Introduction to accessibility, WCAG principles, and basic techniques</p>
+                    <div className="absolute -left-[1.81rem] top-1 h-5 w-5 rounded-full bg-primary flex items-center justify-center">
+                      <span className="text-white text-xs font-bold">1</span>
+                    </div>
+                    <h3 className="text-xl font-medium mb-2">Foundations (Weeks 1-2)</h3>
+                    <p className="text-muted-foreground mb-3">Introduction to accessibility, WCAG principles, and basic techniques</p>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm">
+                      <div className="flex items-center space-x-2">
+                        <Video className="h-4 w-4 text-primary" />
+                        <span>Introduction to Web Accessibility</span>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <Video className="h-4 w-4 text-primary" />
+                        <span>WCAG Guidelines Overview</span>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <FileText className="h-4 w-4 text-primary" />
+                        <span>Accessibility Checklists</span>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <FileText className="h-4 w-4 text-primary" />
+                        <span>Assistive Technology Basics</span>
+                      </div>
+                    </div>
                   </div>
                   
                   <div className="relative">
-                    <div className="absolute -left-[1.81rem] top-1 h-4 w-4 rounded-full bg-primary"></div>
-                    <h3 className="text-lg font-medium">Week 3-4: Implementation</h3>
-                    <p className="text-muted-foreground">Implementing accessible navigation, forms, and media elements</p>
+                    <div className="absolute -left-[1.81rem] top-1 h-5 w-5 rounded-full bg-primary flex items-center justify-center">
+                      <span className="text-white text-xs font-bold">2</span>
+                    </div>
+                    <h3 className="text-xl font-medium mb-2">Implementation (Weeks 3-4)</h3>
+                    <p className="text-muted-foreground mb-3">Implementing accessible navigation, forms, and media elements</p>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm">
+                      <div className="flex items-center space-x-2">
+                        <Video className="h-4 w-4 text-primary" />
+                        <span>Semantic HTML</span>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <Video className="h-4 w-4 text-primary" />
+                        <span>Keyboard Navigation</span>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <FileText className="h-4 w-4 text-primary" />
+                        <span>Accessible Forms</span>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <FileText className="h-4 w-4 text-primary" />
+                        <span>Focus Management</span>
+                      </div>
+                    </div>
                   </div>
                   
                   <div className="relative">
-                    <div className="absolute -left-[1.81rem] top-1 h-4 w-4 rounded-full bg-primary"></div>
-                    <h3 className="text-lg font-medium">Week 5-6: Advanced Techniques</h3>
-                    <p className="text-muted-foreground">Complex UI components, ARIA, and advanced accessibility patterns</p>
+                    <div className="absolute -left-[1.81rem] top-1 h-5 w-5 rounded-full bg-primary flex items-center justify-center">
+                      <span className="text-white text-xs font-bold">3</span>
+                    </div>
+                    <h3 className="text-xl font-medium mb-2">Advanced Techniques (Weeks 5-6)</h3>
+                    <p className="text-muted-foreground mb-3">Complex UI components, ARIA, and advanced accessibility patterns</p>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm">
+                      <div className="flex items-center space-x-2">
+                        <Video className="h-4 w-4 text-primary" />
+                        <span>ARIA Attributes and Roles</span>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <Video className="h-4 w-4 text-primary" />
+                        <span>Complex UI Components</span>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <FileText className="h-4 w-4 text-primary" />
+                        <span>Custom Controls</span>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <FileText className="h-4 w-4 text-primary" />
+                        <span>Advanced ARIA Patterns</span>
+                      </div>
+                    </div>
                   </div>
                   
                   <div className="relative">
-                    <div className="absolute -left-[1.81rem] top-1 h-4 w-4 rounded-full bg-primary"></div>
-                    <h3 className="text-lg font-medium">Week 7-8: Testing and Deployment</h3>
-                    <p className="text-muted-foreground">Accessibility auditing, user testing, and continuous improvement</p>
+                    <div className="absolute -left-[1.81rem] top-1 h-5 w-5 rounded-full bg-primary flex items-center justify-center">
+                      <span className="text-white text-xs font-bold">4</span>
+                    </div>
+                    <h3 className="text-xl font-medium mb-2">Testing and Deployment (Weeks 7-8)</h3>
+                    <p className="text-muted-foreground mb-3">Accessibility auditing, user testing, and continuous improvement</p>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm">
+                      <div className="flex items-center space-x-2">
+                        <Video className="h-4 w-4 text-primary" />
+                        <span>Automated Testing Tools</span>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <Video className="h-4 w-4 text-primary" />
+                        <span>Manual Testing Techniques</span>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <FileText className="h-4 w-4 text-primary" />
+                        <span>User Testing</span>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <FileText className="h-4 w-4 text-primary" />
+                        <span>Continuous Improvement</span>
+                      </div>
+                    </div>
                   </div>
                 </div>
+              </div>
+              
+              {/* Prerequisites */}
+              <Card>
+                <CardHeader>
+                  <CardTitle>Prerequisites</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-2">
+                    <div className="flex items-start space-x-2">
+                      <CheckCircle className="h-5 w-5 text-primary mt-0.5" />
+                      <span>Basic knowledge of HTML, CSS, and JavaScript</span>
+                    </div>
+                    <div className="flex items-start space-x-2">
+                      <CheckCircle className="h-5 w-5 text-primary mt-0.5" />
+                      <span>Understanding of web development principles</span>
+                    </div>
+                    <div className="flex items-start space-x-2">
+                      <CheckCircle className="h-5 w-5 text-primary mt-0.5" />
+                      <span>No prior accessibility knowledge required</span>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+              
+              {/* Downloadable Resources */}
+              <Card>
+                <CardHeader>
+                  <CardTitle>Downloadable Resources</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    <div className="flex justify-between items-center p-3 bg-muted/50 rounded-lg">
+                      <div className="flex items-center space-x-3">
+                        <FileDown className="h-5 w-5 text-primary" />
+                        <span>WCAG Checklist PDF</span>
+                      </div>
+                      <Button variant="outline" size="sm">
+                        <Download className="h-4 w-4 mr-2" />
+                        Download
+                      </Button>
+                    </div>
+                    <div className="flex justify-between items-center p-3 bg-muted/50 rounded-lg">
+                      <div className="flex items-center space-x-3">
+                        <FileDown className="h-5 w-5 text-primary" />
+                        <span>Accessibility Testing Guide</span>
+                      </div>
+                      <Button variant="outline" size="sm">
+                        <Download className="h-4 w-4 mr-2" />
+                        Download
+                      </Button>
+                    </div>
+                    <div className="flex justify-between items-center p-3 bg-muted/50 rounded-lg">
+                      <div className="flex items-center space-x-3">
+                        <FileDown className="h-5 w-5 text-primary" />
+                        <span>Course Slides</span>
+                      </div>
+                      <Button variant="outline" size="sm">
+                        <Download className="h-4 w-4 mr-2" />
+                        Download
+                      </Button>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+              
+              {/* FAQs */}
+              <div>
+                <h2 className="text-2xl font-bold mb-6">Frequently Asked Questions</h2>
+                <Accordion type="single" collapsible className="w-full">
+                  {courseFAQs.map((faq, index) => (
+                    <AccordionItem key={index} value={`item-${index}`}>
+                      <AccordionTrigger className="text-left">{faq.question}</AccordionTrigger>
+                      <AccordionContent>
+                        <p>{faq.answer}</p>
+                      </AccordionContent>
+                    </AccordionItem>
+                  ))}
+                </Accordion>
               </div>
             </div>
             
-            <div>
-              <h2 className="text-2xl font-bold mb-4">Featured Reviews</h2>
-              <div className="space-y-4">
-                {reviews.slice(0, 3).map(review => (
-                  <TestimonialCard
-                    key={review.id}
-                    name="Student Name" // In a real app, you'd fetch the user details
-                    text={review.comment || "Great course!"}
-                    rating={review.rating}
-                  />
-                ))}
-                {reviews.length === 0 && (
-                  <div className="text-center p-6 bg-muted/30 rounded-lg">
-                    <p>No reviews yet. Be the first to review this course!</p>
+            <div className="space-y-8">
+              {/* Instructor Information */}
+              <Card>
+                <CardHeader>
+                  <CardTitle>Your Instructor</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="flex items-center space-x-4">
+                    <Avatar className="h-16 w-16">
+                      <AvatarImage src={`https://randomuser.me/api/portraits/men/${course.teacherId}.jpg`} alt="Dr. Alex Johnson" />
+                      <AvatarFallback>AJ</AvatarFallback>
+                    </Avatar>
+                    <div>
+                      <h3 className="font-bold text-lg">Dr. Alex Johnson</h3>
+                      <p className="text-muted-foreground">Web Accessibility Expert</p>
+                    </div>
                   </div>
-                )}
+                  <p className="text-sm">Dr. Johnson has over 10 years of experience in web development and accessibility. He has worked with major tech companies to improve the accessibility of their products and has authored several books on the subject.</p>
+                  <Button variant="outline" className="w-full">
+                    <ExternalLink className="h-4 w-4 mr-2" />
+                    View Full Profile
+                  </Button>
+                </CardContent>
+              </Card>
+              
+              {/* Course Statistics */}
+              <Card>
+                <CardContent className="p-6 space-y-4">
+                  <div className="flex justify-between">
+                    <div className="text-center">
+                      <p className="text-sm text-muted-foreground">Duration</p>
+                      <p className="text-2xl font-bold">8 weeks</p>
+                    </div>
+                    <div className="text-center">
+                      <p className="text-sm text-muted-foreground">Modules</p>
+                      <p className="text-2xl font-bold">4</p>
+                    </div>
+                    <div className="text-center">
+                      <p className="text-sm text-muted-foreground">Students</p>
+                      <p className="text-2xl font-bold">125+</p>
+                    </div>
+                  </div>
+                  <Separator />
+                  <div className="text-center">
+                    <p className="text-sm text-muted-foreground mb-1">Last Updated</p>
+                    <p className="font-medium">{new Date().toLocaleDateString()}</p>
+                  </div>
+                </CardContent>
+              </Card>
+              
+              {/* Featured Reviews */}
+              <div>
+                <h2 className="text-xl font-bold mb-4">Featured Reviews</h2>
+                <div className="space-y-4">
+                  {reviews.slice(0, 2).map(review => (
+                    <TestimonialCard
+                      key={review.id}
+                      name="Student Name" // In a real app, you'd fetch the user details
+                      text={review.comment || "Great course!"}
+                      rating={review.rating}
+                    />
+                  ))}
+                  {reviews.length === 0 && (
+                    <div className="text-center p-6 bg-muted/30 rounded-lg">
+                      <p>No reviews yet. Be the first to review this course!</p>
+                    </div>
+                  )}
+                </div>
               </div>
+              
+              {/* Share Course */}
+              <Card>
+                <CardHeader>
+                  <CardTitle>Share This Course</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="flex justify-between">
+                    <Button variant="outline" size="sm" className="flex-1 mx-1">
+                      <Share2 className="h-4 w-4 mr-2" />
+                      Twitter
+                    </Button>
+                    <Button variant="outline" size="sm" className="flex-1 mx-1">
+                      <Share2 className="h-4 w-4 mr-2" />
+                      LinkedIn
+                    </Button>
+                    <Button variant="outline" size="sm" className="flex-1 mx-1">
+                      <Share2 className="h-4 w-4 mr-2" />
+                      Email
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
             </div>
           </div>
         </TabsContent>
@@ -554,7 +870,127 @@ export default function CourseDetailsPage() {
           </div>
         </TabsContent>
         
-        {/* Reviews Tab */}
+        {/* Resources Tab */}
+        <TabsContent value="resources">
+          <div className="max-w-4xl mx-auto space-y-8">
+            <h2 className="text-3xl font-bold mb-6">Course Resources</h2>
+            
+            {/* PDF Resources */}
+            <div>
+              <h3 className="text-xl font-medium mb-4">PDF Resources</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {[
+                  { name: "WCAG 2.1 Checklist", size: "1.2 MB", icon: FileDown },
+                  { name: "Accessibility Testing Guide", size: "2.8 MB", icon: FileDown },
+                  { name: "Screen Reader Cheatsheet", size: "0.8 MB", icon: FileDown },
+                  { name: "Accessible Color Combinations", size: "1.5 MB", icon: FileDown },
+                  { name: "ARIA Patterns Guide", size: "3.2 MB", icon: FileDown },
+                  { name: "Keyboard Navigation Best Practices", size: "1.1 MB", icon: FileDown },
+                ].map((resource, index) => (
+                  <Card key={index} className="overflow-hidden">
+                    <CardContent className="p-0">
+                      <div className="bg-muted p-6 flex items-center justify-center">
+                        <resource.icon className="h-12 w-12 text-primary" />
+                      </div>
+                      <div className="p-4">
+                        <h4 className="font-medium mb-1">{resource.name}</h4>
+                        <p className="text-sm text-muted-foreground mb-3">PDF • {resource.size}</p>
+                        <Button variant="outline" size="sm" className="w-full">
+                          <Download className="h-4 w-4 mr-2" />
+                          Download
+                        </Button>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            </div>
+            
+            {/* Code Examples */}
+            <div>
+              <h3 className="text-xl font-medium mb-4">Code Examples</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {[
+                  { name: "Accessible Form Components", description: "Examples of properly labeled form elements with ARIA attributes" },
+                  { name: "Keyboard Navigation Examples", description: "Implementation of focus management and keyboard shortcuts" },
+                  { name: "Screen Reader Compatible Components", description: "Components that work well with screen readers" },
+                  { name: "Color Contrast Demos", description: "Examples of accessible color combinations with proper contrast ratios" },
+                ].map((example, index) => (
+                  <Card key={index}>
+                    <CardHeader>
+                      <CardTitle className="text-base">{example.name}</CardTitle>
+                      <CardDescription>{example.description}</CardDescription>
+                    </CardHeader>
+                    <CardFooter>
+                      <Button variant="outline" size="sm">
+                        <ExternalLink className="h-4 w-4 mr-2" />
+                        View Code
+                      </Button>
+                    </CardFooter>
+                  </Card>
+                ))}
+              </div>
+            </div>
+            
+            {/* External Resources */}
+            <div>
+              <h3 className="text-xl font-medium mb-4">External Resources</h3>
+              <Card>
+                <CardContent className="p-0">
+                  <div className="divide-y">
+                    {[
+                      { name: "W3C Web Accessibility Initiative", description: "Official web accessibility guidelines and techniques" },
+                      { name: "A11Y Project", description: "Community-driven effort to make web accessibility easier" },
+                      { name: "MDN Accessibility Guide", description: "Comprehensive documentation for web accessibility" },
+                      { name: "WebAIM", description: "Web accessibility resources and tools" },
+                    ].map((resource, index) => (
+                      <div key={index} className="flex items-center justify-between p-4">
+                        <div>
+                          <h4 className="font-medium">{resource.name}</h4>
+                          <p className="text-sm text-muted-foreground">{resource.description}</p>
+                        </div>
+                        <Button variant="ghost" size="sm">
+                          <ExternalLink className="h-4 w-4 mr-2" />
+                          Visit
+                        </Button>
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+        </TabsContent>
+        
+        {/* FAQ Tab */}
+        <TabsContent value="faq">
+          <div className="max-w-3xl mx-auto">
+            <h2 className="text-3xl font-bold mb-8 text-center">Frequently Asked Questions</h2>
+            <Accordion type="single" collapsible className="w-full space-y-4">
+              {courseFAQs.map((faq, index) => (
+                <Card key={index}>
+                  <AccordionItem value={`item-${index}`}>
+                    <AccordionTrigger className="text-left px-6 py-4 hover:no-underline">
+                      <span className="text-lg font-medium">{faq.question}</span>
+                    </AccordionTrigger>
+                    <AccordionContent className="px-6 pb-4">
+                      <p className="text-muted-foreground">{faq.answer}</p>
+                    </AccordionContent>
+                  </AccordionItem>
+                </Card>
+              ))}
+            </Accordion>
+            
+            <div className="mt-12 bg-muted/30 p-6 rounded-lg">
+              <h3 className="text-xl font-bold mb-4 text-center">Still have questions?</h3>
+              <p className="text-center mb-6">Contact us and we'll get back to you as soon as possible</p>
+              <div className="flex justify-center">
+                <Button>Contact Support</Button>
+              </div>
+            </div>
+          </div>
+        </TabsContent>
+        
         <TabsContent value="reviews">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             <div className="lg:col-span-2 space-y-8">
