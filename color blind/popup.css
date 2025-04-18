@@ -1,0 +1,181 @@
+/* ========== MINIMALIST POPUP ========== */
+body {
+    margin: 0;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: #fafafa;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 180px;
+  }
+  
+  .popup-card {
+    width: 280px;
+    background: #ffffff;
+    padding: 24px;
+    border-radius: 12px;
+    box-shadow: 
+      0 2px 4px rgba(0, 0, 0, 0.02),
+      0 4px 12px rgba(0, 0, 0, 0.04);
+    margin: 20px;
+    border: 1px solid rgba(0, 0, 0, 0.04);
+  }
+  
+  h2 {
+    color: #222;
+    margin-top: 0;
+    margin-bottom: 20px;
+    font-size: 18px;
+    text-align: center;
+    font-weight: 600;
+    letter-spacing: -0.2px;
+  }
+  
+  .form-group {
+    margin-bottom: 16px;
+  }
+  
+  .form-group label {
+    display: block;
+    color: #444;
+    font-size: 13px;
+    margin-bottom: 6px;
+    font-weight: 500;
+  }
+  
+  /* Toggle Switch */
+  input[type="checkbox"] {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 36px;
+    height: 20px;
+    background: #e0e0e0;
+    border-radius: 10px;
+    position: relative;
+    cursor: pointer;
+    outline: none;
+    transition: all 0.3s ease;
+  }
+  
+  input[type="checkbox"]:checked {
+    background: #4f46e5;
+  }
+  
+  input[type="checkbox"]::before {
+    content: '';
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: white;
+    top: 2px;
+    left: 2px;
+    transition: all 0.3s ease;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  }
+  
+  input[type="checkbox"]:checked::before {
+    left: 18px;
+  }
+  
+  /* Sliders */
+  input[type="range"] {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    height: 4px;
+    background: #e0e0e0;
+    border-radius: 2px;
+    outline: none;
+  }
+  
+  input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 16px;
+    height: 16px;
+    background: #4f46e5;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  
+  input[type="range"]::-webkit-slider-thumb:hover {
+    transform: scale(1.1);
+  }
+  
+  /* Select Dropdown */
+  select {
+    width: 100%;
+    padding: 8px 10px;
+    border: 1px solid #e0e0e0;
+    border-radius: 6px;
+    font-size: 13px;
+    background: white;
+    color: #444;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  
+  select:focus {
+    border-color: #4f46e5;
+    outline: none;
+  }
+  
+  /* Value Displays */
+  #fontSizeValue,
+  #spacingValue {
+    display: inline-block;
+    margin-left: 8px;
+    color: #666;
+    font-size: 12px;
+    font-feature-settings: 'tnum';
+    font-variant-numeric: tabular-nums;
+  }
+  
+  /* Buttons */
+  .button-group {
+    display: flex;
+    gap: 8px;
+    margin-top: 20px;
+  }
+  
+  .apply-button,
+  .reset-button {
+    flex-grow: 1;
+    padding: 8px 12px;
+    border: none;
+    border-radius: 6px;
+    font-weight: 500;
+    cursor: pointer;
+    font-size: 13px;
+    transition: all 0.2s ease;
+  }
+  
+  .apply-button {
+    background: #4f46e5;
+    color: white;
+  }
+  
+  .apply-button:hover {
+    background: #4338ca;
+  }
+  
+  .reset-button {
+    background: transparent;
+    color: #666;
+    border: 1px solid #e0e0e0;
+  }
+  
+  .reset-button:hover {
+    background: #f5f5f5;
+  }
+  
+  /* Micro-interactions */
+  input, select, button {
+    transition: all 0.2s ease;
+  }
+  
+  input:focus, select:focus {
+    box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.2);
+  }

@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>EduAdapt: Accessibility Settings</title>
+  <link rel="stylesheet" href="popup.css">
+ 
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="popup-card">
+    <h2>Accessibility Settings</h2>
+
+    <div class="form-group">
+      <label for="enableDyslexia">Dyslexia Friendly Font</label>
+      <input type="checkbox" id="enableDyslexia" />
+    </div>
+
+    <div class="form-group">
+      <label for="fontSize">Font Size</label>
+      <input type="range" id="fontSize" min="14" max="24" value="18" />
+      <span id="fontSizeValue">18px</span>
+    </div>
+
+    <div class="form-group">
+      <label for="spacing">Letter Spacing</label>
+      <input type="range" id="spacing" min="0" max="10" value="2" />
+      <span id="spacingValue">0.2em</span>
+    </div>
+
+    <div class="form-group">
+      <label for="cbType">Color Blindness Mode</label>
+      <select id="cbType">
+        <option value="">Off</option>
+        <option value="protanopia">Protanopia</option>
+        <option value="deuteranopia">Deuteranopia</option>
+        <option value="tritanopia">Tritanopia</option>
+        <option value="achromatopsia">Achromatopsia</option>
+      </select>
+    </div>
+
+    <div class="button-group">
+      <button id="apply" class="apply-button">Apply</button>
+      <button id="reset" class="reset-button">Reset</button>
+    </div>
+  </div>
+  <script src="popup.js"></script>
+</body>
+</html>
