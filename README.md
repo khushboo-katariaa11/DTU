@@ -1,54 +1,50 @@
-# 🧠 EduAble – Inclusive Learning, For Everyone
+# Inclusive Education Platform
 
-EduAble is a education platform that customizes digital experiences for users with disabilities — including *dyslexia, **color blindness, **hearing impairments, and **mute individuals*. It automatically adapts fonts, colors, and accessibility settings to ensure every learner has equal access to information, no matter their challenge.
-
----
-
-## 💡 Problem We’re Solving
-
-Over 1 billion people worldwide live with a disability. The internet, designed for the average user, often fails to provide the readability, clarity, or assistance required by individuals with visual, cognitive, or auditory disabilities. This leads to exclusion and a massive learning gap.
-
----
----
-
-## 🧠 What EduAdapt Does
-
-EduAdapt transforms websites and courses into accessible experiences for a wide range of disabilities:
-
-| Accessibility Type     | Features |
-|------------------------|----------|
-| *Dyslexia*           | Custom font (OpenDyslexic), line spacing, adjustable font sizes |
-| *Color Blindness*    | Safe color themes: Protanopia, Deuteranopia, Tritanopia, Achromatopsia |
-| *Mute*               | Prompts for captions and subtitle-friendly UX |
-| *Deaf*               | Text-to-Speech (TTS) for all on-screen content |
-| *Motor Disabilities* | Hands-free control via *head movement tracking* and *voice commands* (planned) |
+An award-winning, accessibility-first web platform designed to empower learners with visual, cognitive, and communication disabilities. Built during Vihaan 8.0 Hackathon (IEEE DTU), this project focuses on inclusive learning through adaptive features like voice assistance, dyslexia-friendly interfaces, color customization, and sign-to-speech conversion — all without training custom models.
 
 ---
 
-## 🧠 Motor Disability Support (Hands-Free Mode)
+## 🏆 Hackathon Achievement
 
-EduAdapt is designed to support users who cannot use a keyboard or mouse. Future updates include:
+**🥇 1st Place – Vihaan 8.0 Hackathon (IEEE DTU)**  
+Selected from 2000+ registrations and 400+ teams, our team **Oink Boink** built this platform in just 24 hours and emerged as the overall winner.
 
-- 🎯 *Head Tracking* using TensorFlow.js or Mediapipe to move the cursor or select elements
-- 🎙 *Voice Command Navigation* (e.g., "Scroll Down", "Next Lesson", "Click Start")
-- 💬 Visual cues for accessible interaction feedback
+---
 
-These features aim to give users full control of both our learning platform and any standard website — without needing to touch the device.
+## 💡 Key Features
+
+### 🧠 For Dyslexic Learners
+- Customizable dyslexia-friendly fonts
+- Adjust spacing, font size, and background themes for ease of reading
+
+### 👁️ For Color Blind Users
+- Color filters and contrast adjustments
+- User-controlled color palettes to enhance visibility
+
+### 👨‍🦯 For Visually Impaired Users
+- Text-to-speech functionality
+- Voice-assisted navigation and content interaction
+
+### 🧏 For Mute & Hearing-Impaired Users
+- **Sign-to-Speech Converter**: Real-time translation of sign language to spoken words using **MediaPipe** and **OpenCV**
+- No need for custom ML training — lightweight and efficient
+
+---
+
+## ⚙️ Tech Stack
+
+- **Frontend**: React.js, Tailwind CSS
+- **Backend**: Node.js, Express.js
+- **Database**: MongoDB
+- **Computer Vision**: OpenCV, MediaPipe
+- **Text-to-Speech**: Web Speech API
+
+---
+
+## 🎯 Impact
+
+This platform enables a more inclusive online education experience by tailoring content and UI for individual user needs. It promotes digital accessibility and bridges gaps in current ed-tech offerings.
 
 ---
 
 
-####  Features:
-- [x] Toggle Dyslexia Mode
-- [x] Adjust font size and letter spacing
-- [x] Select color blindness mode
-- [x] Enable support for mute and deaf users
-- [x] Reset All Settings
-
-### 📚 Web Platform (EduAdapt Learn)
-An integrated course library auto-adapts UI based on a user's selected disability:
-- Personalized onboarding
-- Accessibility-aware UI per user
-- Interactive, equitable lessons
-
----
